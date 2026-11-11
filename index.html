@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تأهيل الرقمية - معرض المشاريع</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">🎓 منصة التأهيل</h1>
+            <div class="nav-links">
+                <a href="index.html" class="active">الرئيسية</a>
+                <a href="add-project.html" class="btn-add">إضافة مشروع +</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- واجهة الترحيب مع الأشكال والشخصيات -->
+    <header class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h2>مشاريع تخرج الطلبة الكفاءات</h2>
+                <p>منصة رقمية مخصصة لاستعراض نتاجات طلبة هندسة تقنيات المعلومات والشبكات والتواصل المباشر مع الشركات وأصحاب الأعمال.</p>
+            </div>
+            <div class="hero-illustration">
+                <!-- أشكال الشخصيات (الخريجين وأصحاب الأعمال بدون ملامح) -->
+                <div class="faceless-vector" style="width: 100%; max-width: 320px; height: 180px; margin: 0 auto; display: flex; justify-content: center; align-items: center;">
+                    <svg viewBox="0 0 320 180" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="90" r="55" fill="#2b2b2b" opacity="0.8"/>
+                        <circle cx="220" cy="90" r="55" fill="#800020" opacity="0.4"/>
+                        <circle cx="220" cy="70" r="18" fill="#d1d1d6"/>
+                        <path d="M190 140 C190 110 250 110 250 140 Z" fill="#d1d1d6"/>
+                        <rect x="212" y="95" width="16" height="20" fill="#800020" rx="3"/>
+                        <circle cx="100" cy="70" r="18" fill="#ffffff"/>
+                        <path d="M70 140 C70 110 130 110 130 140 Z" fill="#ffffff"/>
+                        <polygon points="100,42 125,52 100,62 75,52" fill="#800020"/>
+                        <rect x="97" y="55" width="6" height="12" fill="#800020"/>
+                        <circle cx="160" cy="90" r="16" fill="#1a1a1a" stroke="#800020" stroke-width="2"/>
+                        <text x="160" y="96" fill="#ffffff" font-size="14" text-anchor="middle">🤝</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- معرض الكروت -->
+    <main class="main-container">
+        <div class="grid" id="projects-grid">
+            <!-- ستظهر المشاريع هنا تلقائياً -->
+        </div>
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer class="footer">
+        <p>© 2026 منصة تأهيل - كلية هندسة تقنيات المعلومات. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <!-- نافذة التفاصيل المنبثقة -->
+    <div id="project-modal" class="modal-backdrop">
+        <div class="modal-box">
+            <span class="close-modal" onclick="closeDetails()">&times;</span>
+            <h2 id="modal-title" class="modal-title">عنوان المشروع</h2>
+            <p id="modal-desc" class="modal-text">هنا سيظهر شرح تفصيلي وموسع عن المشروع المختار للشركات.</p>
+            <div class="modal-actions" style="margin-top: 20px;">
+                <!-- سيظهر زر التواصل هنا ديناميكياً -->
+            </div>
+        </div>
+    </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const projects = JSON.parse(localStorage.getItem('myProjects')) || [];
+    const grid = document.getElementById('projects-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    projects.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    projects.forEach((data, index) => {
+      const studentEmail = data.email || 'student@taheel.com';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-body">
+          <span class="tag">${data.department}</span>
+          <h3>${data.title}</h3>
+          <p class="description">${data.desc}</p>
+        </div>
+        <div class="card-footer">
+          <div class="student-info">
+            <span class="name">${data.name}</span>
+            <span class="title">طالب خريج</span>
+          </div>
+          <button class="btn-view" id="view-btn-${index}">عرض التفاصيل</button>
+        </div>
+      `;
+      grid.appendChild(card);
+
+      document.getElementById(`view-btn-${index}`).addEventListener('click', function() {
+        showDetails(data.title, data.desc, studentEmail);
+      });
+    });
+  });
+
+  function showDetails(title, desc, email) {
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('modal-desc').innerText = desc;
+    
+    const modalActions = document.querySelector('.modal-actions');
+    if (modalActions) {
+      modalActions.innerHTML = `
+        <a href="mailto:${email}" class="btn-code">📧 تواصل مع الطالب: ${email}</a>
+      `;
+    }
+
+    document.getElementById('project-modal').style.display = 'flex';
+  }
+
+  function closeDetails() {
+    document.getElementById('project-modal').style.display = 'none';
+  }
+</script>
+</body>
+</html>
